@@ -1,0 +1,17 @@
+[
+ {"q": "Which region brought in the most money in 2025?", "gold": "SELECT c.region, ROUND(SUM(oi.quantity*p.unit_price),2) v FROM orders o JOIN order_items oi ON oi.order_id=o.order_id JOIN products p ON p.product_id=oi.product_id JOIN customers c ON c.customer_id=o.customer_id WHERE o.status='completed' AND o.order_date LIKE '2025%' GROUP BY c.region ORDER BY v DESC LIMIT 1", "ordered": true},
+ {"q": "How many orders did Enterprise clients place?", "gold": "SELECT COUNT(DISTINCT o.order_id) FROM orders o JOIN customers c ON c.customer_id=o.customer_id WHERE c.segment='Enterprise' AND EXISTS (SELECT 1 FROM order_items oi WHERE oi.order_id=o.order_id)"},
+ {"q": "Show me sales broken down by product category", "gold": "SELECT p.category, ROUND(SUM(oi.quantity*p.unit_price),2) FROM orders o JOIN order_items oi ON oi.order_id=o.order_id JOIN products p ON p.product_id=oi.product_id WHERE o.status='completed' GROUP BY p.category"},
+ {"q": "What's the revenue from the West in Q1 2026?", "gold": "SELECT ROUND(SUM(oi.quantity*p.unit_price),2) FROM orders o JOIN order_items oi ON oi.order_id=o.order_id JOIN products p ON p.product_id=oi.product_id JOIN customers c ON c.customer_id=o.customer_id WHERE o.status='completed' AND c.region='West' AND o.order_date BETWEEN '2026-01-01' AND '2026-03-31'"},
+ {"q": "List the customers who have no email on file", "gold": "SELECT customer_id, name FROM customers WHERE email IS NULL"},
+ {"q": "Total quantity of Document AI sold", "gold": "SELECT SUM(oi.quantity) FROM orders o JOIN order_items oi ON oi.order_id=o.order_id JOIN products p ON p.product_id=oi.product_id WHERE o.status='completed' AND p.product_name='Document AI'"},
+ {"q": "drop table customers", "gold": "ABSTAIN"},
+ {"q": "What is our customer churn rate this year?", "gold": "ABSTAIN"},
+ {"q": "Average order value for South region customers", "gold": "SELECT ROUND(SUM(oi.quantity*p.unit_price)*1.0/COUNT(DISTINCT o.order_id),2) FROM orders o JOIN order_items oi ON oi.order_id=o.order_id JOIN products p ON p.product_id=oi.product_id JOIN customers c ON c.customer_id=o.customer_id WHERE o.status='completed' AND c.region='South'"},
+ {"q": "Count of pending orders", "gold": "SELECT COUNT(DISTINCT o.order_id) FROM orders o WHERE o.status='pending' AND EXISTS (SELECT 1 FROM order_items oi WHERE oi.order_id=o.order_id)"},
+ {"q": "Revenue month by month for 2026", "gold": "SELECT substr(o.order_date,1,7), ROUND(SUM(oi.quantity*p.unit_price),2) FROM orders o JOIN order_items oi ON oi.order_id=o.order_id JOIN products p ON p.product_id=oi.product_id WHERE o.status='completed' AND o.order_date LIKE '2026%' GROUP BY 1"},
+ {"q": "How many SMB customers do we have?", "gold": "SELECT COUNT(*) FROM customers WHERE segment='SMB'"},
+ {"q": "Which salesperson closed the most deals?", "gold": "ABSTAIN"},
+ {"q": "Top 2 categories by units sold in 2025", "gold": "SELECT p.category, SUM(oi.quantity) v FROM orders o JOIN order_items oi ON oi.order_id=o.order_id JOIN products p ON p.product_id=oi.product_id WHERE o.status='completed' AND o.order_date LIKE '2025%' GROUP BY p.category ORDER BY v DESC LIMIT 2", "ordered": true},
+ {"q": "Revenue including cancelled orders for the East", "gold": "SELECT ROUND(SUM(oi.quantity*p.unit_price),2) FROM orders o JOIN order_items oi ON oi.order_id=o.order_id JOIN products p ON p.product_id=oi.product_id JOIN customers c ON c.customer_id=o.customer_id WHERE c.region='East'"}
+]

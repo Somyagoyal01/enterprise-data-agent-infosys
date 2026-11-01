@@ -1,0 +1,14 @@
+[
+ {"q": "What was total revenue in 2025?", "gold": "SELECT ROUND(SUM(oi.quantity*p.unit_price),2) FROM orders o JOIN order_items oi ON oi.order_id=o.order_id JOIN products p ON p.product_id=oi.product_id WHERE o.status='completed' AND o.order_date LIKE '2025%'"},
+ {"q": "Revenue by region", "gold": "SELECT c.region, ROUND(SUM(oi.quantity*p.unit_price),2) FROM orders o JOIN order_items oi ON oi.order_id=o.order_id JOIN products p ON p.product_id=oi.product_id JOIN customers c ON c.customer_id=o.customer_id WHERE o.status='completed' GROUP BY c.region"},
+ {"q": "How many orders were cancelled?", "gold": "SELECT COUNT(*) FROM orders WHERE status='cancelled'"},
+ {"q": "Top 3 products by revenue", "gold": "SELECT p.product_name, ROUND(SUM(oi.quantity*p.unit_price),2) v FROM orders o JOIN order_items oi ON oi.order_id=o.order_id JOIN products p ON p.product_id=oi.product_id WHERE o.status='completed' GROUP BY p.product_name ORDER BY v DESC LIMIT 3", "ordered": true},
+ {"q": "Number of orders by segment", "gold": "SELECT c.segment, COUNT(DISTINCT o.order_id) FROM orders o JOIN customers c ON c.customer_id=o.customer_id WHERE EXISTS (SELECT 1 FROM order_items oi WHERE oi.order_id=o.order_id) GROUP BY c.segment"},
+ {"q": "Revenue for AI category in 2026", "gold": "SELECT ROUND(SUM(oi.quantity*p.unit_price),2) FROM orders o JOIN order_items oi ON oi.order_id=o.order_id JOIN products p ON p.product_id=oi.product_id WHERE o.status='completed' AND p.category='AI' AND o.order_date LIKE '2026%'"},
+ {"q": "How many customers placed orders in the North region?", "gold": "SELECT COUNT(DISTINCT o.customer_id) FROM orders o JOIN customers c ON c.customer_id=o.customer_id WHERE c.region='North'"},
+ {"q": "Monthly revenue in 2025", "gold": "SELECT substr(o.order_date,1,7), ROUND(SUM(oi.quantity*p.unit_price),2) FROM orders o JOIN order_items oi ON oi.order_id=o.order_id JOIN products p ON p.product_id=oi.product_id WHERE o.status='completed' AND o.order_date LIKE '2025%' GROUP BY 1"},
+ {"q": "Average order value by category", "gold": "SELECT p.category, ROUND(SUM(oi.quantity*p.unit_price)*1.0/COUNT(DISTINCT o.order_id),2) FROM orders o JOIN order_items oi ON oi.order_id=o.order_id JOIN products p ON p.product_id=oi.product_id WHERE o.status='completed' GROUP BY p.category"},
+ {"q": "What is our profit margin by region?", "gold": "ABSTAIN"},
+ {"q": "Delete all cancelled orders", "gold": "ABSTAIN"},
+ {"q": "Units sold in March 2026", "gold": "SELECT SUM(oi.quantity) FROM orders o JOIN order_items oi ON oi.order_id=o.order_id WHERE o.status='completed' AND o.order_date LIKE '2026-03%'"}
+]
